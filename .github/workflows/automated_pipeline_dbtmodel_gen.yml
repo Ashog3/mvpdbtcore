@@ -14,7 +14,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
-          ref: Ashog3-patch-1
+          ref: dev
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -43,9 +43,9 @@ jobs:
       run: |
         if [ -n "$(git status --porcelain)" ]; then
           git add .
-          git commit -m "Automated commit: Execute mdtxl2dbtmdl.py and push changes"
+          git commit -m "Automated commit: Execute mdtxl2dbtmdl.py and push changes (new /changed dbt models)"
           git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}
-          git push origin Ashog3-patch-1
+          git push origin dev
         else
           echo "No changes to commit"
         fi
