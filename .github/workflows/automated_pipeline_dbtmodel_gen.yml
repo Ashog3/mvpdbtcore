@@ -1,0 +1,51 @@
+name: Build DBT Models Automatic and Push to Branch
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  execute-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+          ref: dev
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pandas openpyxl
+
+    - name: Execute Python script
+      env:
+          REPO_ROOT: ${{ github.workspace }}
+      run: |
+        python mdtxl2dbtmdl.py $REPO_ROOT
+
+    - name: Configure Git
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: Commit and Push changes 
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}   
+      run: |
+        if [ -n "$(git status --porcelain)" ]; then
+          git add .
+          git commit -m "Automated commit: Execute mdtxl2dbtmdl.py and push changes (new /changed dbt models)"
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}
+          git push origin dev
+        else
+          echo "No changes to commit"
+        fi
