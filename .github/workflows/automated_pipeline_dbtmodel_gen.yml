@@ -39,7 +39,7 @@ jobs:
 
     - name: Commit and Push changes 
       env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        GH_TOKEN: ${{ secrets.GH_TOKEN1 }}
       run: |
         if [ -n "$(git status --porcelain)" ]; then
           git add .
