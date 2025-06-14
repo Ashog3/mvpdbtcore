@@ -56,12 +56,12 @@ print("CDS \n", sql_statement2)
 
 root_path = sys.argv[1]
 # Write the SQL statement to a file
-output_file = f"{root_path}/models/example/sac_{source_table.lower()}.sql"
+output_file = f"{root_path}/project1/models/example/sac_{source_table.lower()}.sql"
 with open(output_file, "w") as file:
     file.write(sql_statement1)
 
 # Write the SQL statement to a file
-output_file = f"{root_path}/models/example/cds_{source_table.lower()}.sql"
+output_file = f"{root_path}/project1/models/example/cds_{source_table.lower()}.sql"
 with open(output_file, "w") as file:
     file.write(sql_statement2)
 
