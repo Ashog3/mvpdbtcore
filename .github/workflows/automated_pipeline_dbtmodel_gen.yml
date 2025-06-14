@@ -1,9 +1,11 @@
 name: Build DBT Models Automatic and Push to Branch
 
 on:
-  push:
-    branches:
-      - main
+  #push:
+    #branches:
+      #- main
+  workflow_dispatch:
+
 jobs:
   execute-and-push:
     runs-on: ubuntu-latest
