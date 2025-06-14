@@ -14,6 +14,8 @@ if "Source_table" not in sourcefile_df.columns or "Target_table" not in targetta
 
 # Extract the source table and columns
 source_table = sourcefile_df["Source_table"].iloc[0]
+source_gcp_project_id = sourcefile_df["Source_project_id"].iloc[0]
+source_gcp_dataset = sourcefile_df["Source_dataset"].iloc[0]
 source_columns = sourcefile_df["Field_name"].iloc[1:].tolist()
 # source_columns = source_columns.append('current_timestamp() as load_time')
 
@@ -22,7 +24,14 @@ target_table = targettable_df["Target_table"].iloc[0]
 target_columns = targettable_df["Field_name"].iloc[1:].tolist()
 
 sql_statement1= f""" 
-SELECT * FROM `dbtwithgcp.mydbtproject.{source_table}`
+{{{{ config(materialized='table') }}}}
+
+with SOURCE_DATA as (
+SELECT * FROM `{source_gcp_project_id}.{source_gcp_dataset}.{source_table}`
+)
+
+SELECT * FROM SOURCE_DATA
+
 """
 
 # Generate the SQL statement
