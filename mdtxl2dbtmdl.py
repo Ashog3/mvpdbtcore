@@ -36,7 +36,7 @@ sql_statement0 = f"""
 
 WITH STG_{source_table} AS (
 
-SELECT {', CAST(NULL AS STRING)'.join(source_columns)}
+SELECT "CAST(NULL AS STRING) AS" + {', '.join(source_columns)}
 LIMIT 0
 
 )
