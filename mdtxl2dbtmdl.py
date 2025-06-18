@@ -29,15 +29,15 @@ sql_statement0 = f"""
 
 {{{{
    config(
-        materialized='table',
-        on_schema_change='fail'
+        materialized='table'
    )
  
 }}}}
 
 WITH STG_{source_table} AS (
 
-SELECT {', '.join(source_columns)}
+SELECT {', CAST(NULL AS STRING)'.join(source_columns)}
+LIMIT 0
 
 )
 SELECT {', '.join(source_columns)} FROM STG_{source_table}
