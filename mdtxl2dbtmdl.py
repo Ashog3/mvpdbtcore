@@ -23,6 +23,28 @@ source_columns = sourcefile_df["Field_name"].iloc[1:].tolist()
 target_table = targettable_df["Target_table"].iloc[0]
 target_columns = targettable_df["Field_name"].iloc[1:].tolist()
 
+print("**** DBT Models Generation Process STG, SAC, CDS ***\n")
+
+sql_statement0 = f"""
+
+{{{{
+   config(
+        materialized='table',
+        on_schema_change='fail'
+   )
+ 
+}}}}
+
+WITH STG_{source_table} AS (
+
+SELECT {', '.join(source_columns)}
+
+)
+SELECT {', '.join(source_columns)} FROM STG_{source_table}
+
+
+"""
+
 sql_statement1= f""" 
 {{{{ config(materialized='table') }}}}
 
@@ -45,13 +67,13 @@ sql_statement2 = f"""
  
 }}}}
 
-WITH STG_{source_table} AS (
+WITH SAC_{source_table} AS (
 
 SELECT id,{', '.join(source_columns)}
 FROM {{{{ ref("sac_original") }}}} 
 
 )
-SELECT id,{', '.join(source_columns)},current_timestamp() as load_time FROM STG_{source_table}
+SELECT id,{', '.join(source_columns)},current_timestamp() as load_time FROM SAC_{source_table}
 
 {{% if is_incremental() %}}
 where id > ( select max(id) from {{{{this}}}})
@@ -60,16 +82,22 @@ where id > ( select max(id) from {{{{this}}}})
 
 # Output the SQL statement
 print("Generated SQL Statements:")
-print("SAC \n",sql_statement1)
-print("CDS \n", sql_statement2)
+print("**SAC Model creation log**\n",sql_statement1)
+print("**CDS Model creation log**\n", sql_statement2)
 
 root_path = sys.argv[1]
-# Write the SQL statement to a file
+
+# Write the dbt model to a file
+output_file = f"{root_path}/dbt_workspace/project1/models/example/stg_{source_table.lower()}.sql"
+with open(output_file, "w") as file:
+    file.write(sql_statement0)
+
+# Write the dbt model to a file
 output_file = f"{root_path}/dbt_workspace/project1/models/example/sac_{source_table.lower()}.sql"
 with open(output_file, "w") as file:
     file.write(sql_statement1)
 
-# Write the SQL statement to a file
+# Write the dbt model to a file
 output_file = f"{root_path}/dbt_workspace/project1/models/example/cds_{source_table.lower()}.sql"
 with open(output_file, "w") as file:
     file.write(sql_statement2)
