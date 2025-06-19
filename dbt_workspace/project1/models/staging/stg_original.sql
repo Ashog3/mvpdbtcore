@@ -1,3 +1,5 @@
+
+
 {{
    config(
         materialized='table'
@@ -11,4 +13,6 @@ SELECT CAST(NULL AS STRING) AS first_name, CAST(NULL AS STRING) AS last_name, CA
 LIMIT 0
 
 )
-SELECT first_name, last_name, gender, City, JobTitle, Salary1, Latitude, Longitude FROM STG_ORIGINAL
+SELECT first_name, last_name, gender, City, JobTitle, Salary1, Latitude, Longitude FROM  STG_ORIGINAL
+
+
