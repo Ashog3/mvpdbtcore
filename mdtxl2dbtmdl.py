@@ -40,7 +40,7 @@ SELECT CAST(NULL AS STRING) AS {', CAST(NULL AS STRING) AS '.join(source_columns
 LIMIT 0
 
 )
-SELECT {', '.join(source_columns)} FROM STG_{source_table}
+SELECT {', '.join(source_columns)} FROM  STG_{source_table}
 
 
 """
@@ -87,17 +87,17 @@ print("**CDS Model creation log**\n", sql_statement2)
 
 root_path = sys.argv[1]
 
-# Write the dbt model to a file
-output_file = f"{root_path}/dbt_workspace/project1/models/example/stg_{source_table.lower()}.sql"
+# Write the stg dbt model to a file , empty landing table creation
+output_file = f"{root_path}/dbt_workspace/project1/models/staging/stg_{source_table.lower()}.sql"
 with open(output_file, "w") as file:
     file.write(sql_statement0)
 
-# Write the dbt model to a file
+# Write the SAC dbt model to a file
 output_file = f"{root_path}/dbt_workspace/project1/models/example/sac_{source_table.lower()}.sql"
 with open(output_file, "w") as file:
     file.write(sql_statement1)
 
-# Write the dbt model to a file
+# Write the CDS dbt model to a file
 output_file = f"{root_path}/dbt_workspace/project1/models/example/cds_{source_table.lower()}.sql"
 with open(output_file, "w") as file:
     file.write(sql_statement2)
