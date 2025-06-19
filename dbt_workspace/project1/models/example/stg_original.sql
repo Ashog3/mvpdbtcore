@@ -1,5 +1,3 @@
-
-
 {{
    config(
         materialized='table'
@@ -14,5 +12,3 @@ LIMIT 0
 
 )
 SELECT first_name, last_name, gender, City, JobTitle, Salary1, Latitude, Longitude FROM STG_ORIGINAL
-
-
