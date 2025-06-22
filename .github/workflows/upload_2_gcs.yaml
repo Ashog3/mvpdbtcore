@@ -1,0 +1,30 @@
+name: Upload to GCS
+
+on:
+  push:
+    branches:
+      - main  # Trigger this workflow when changes are pushed to the main branch
+
+jobs:
+  upload_to_gcs:
+    runs-on: ubuntu-latest  # Use Ubuntu runner for the job
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2  # Checkout the code from the GitHub repository
+    
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'  # Set the desired Python version (3.8 in this case)
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip  # Upgrade pip to latest version
+        pip install google-cloud-storage google-cloud-secret-manager  # Install required Python dependencies
+
+    - name: Upload files to GCS
+      run: python upload_files.py  # Run the Python script to upload files from repo to GCS
+
+    - name: Clean up (optional)
+      run: rm -rf gcp-key.json  # Clean up any sensitive files (if any)
