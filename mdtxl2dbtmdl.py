@@ -50,7 +50,7 @@ sql_statement1= f"""
 {{{{ config(materialized='table') }}}}
 
 with SOURCE_DATA as (
-SELECT * FROM `{source_gcp_project_id}.{source_gcp_dataset}.{source_table}`
+SELECT dt.*,Salary1*0.3 As Incm_tax FROM `{source_gcp_project_id}.{source_gcp_dataset}.STG_{source_table} dt`
 )
 
 SELECT * FROM SOURCE_DATA
@@ -74,7 +74,7 @@ SELECT id,{', '.join(source_columns)}
 FROM {{{{ ref("sac_original") }}}} 
 
 )
-SELECT id,{', '.join(source_columns)},current_timestamp() as load_time FROM SAC_{source_table}
+SELECT id,{', '.join(source_columns)},Incm_tax,current_timestamp() as load_time FROM SAC_{source_table}
 
 {{% if is_incremental() %}}
 where id > ( select max(id) from {{{{this}}}})
