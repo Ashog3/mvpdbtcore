@@ -3,6 +3,7 @@
 {{
    config(
         materialized='table'
+        tags=['no_default_run']
    )
  
 }}
