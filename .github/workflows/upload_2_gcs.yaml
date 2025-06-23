@@ -25,7 +25,7 @@ jobs:
         pip install google-cloud-storage google-cloud-secret-manager  # Install required Python dependencies
 
     - name: Upload files to GCS
-      run: python upload_files.py  # Run the Python script to upload files from repo to GCS
+      run: python upload2bucket.py  # Run the Python script to upload files from repo to GCS
 
     - name: Clean up (optional)
       run: rm -rf gcp-key.json  # Clean up any sensitive files (if any)

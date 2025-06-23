@@ -16,7 +16,7 @@ def get_credentials_from_secret_manager(secret_name, project_id):
     import json
 
     client = secretmanager.SecretManagerServiceClient()
-    secret_name = f"projects/{project_id}/secrets/{secret_name}/versions/latest"
+    secret_name = f"projects/{project_id}/secrets/{secret_name}"
     response = client.access_secret_version(name=secret_name)
     secret_payload = response.payload.data.decode("UTF-8")
     

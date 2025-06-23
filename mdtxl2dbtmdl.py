@@ -16,12 +16,12 @@ if "Source_table" not in sourcefile_df.columns or "Target_table" not in targetta
 source_table = sourcefile_df["Source_table"].iloc[0]
 source_gcp_project_id = sourcefile_df["Source_project_id"].iloc[0]
 source_gcp_dataset = sourcefile_df["Source_dataset"].iloc[0]
-source_columns = sourcefile_df["Field_name"].iloc[1:].tolist()
+source_columns = sourcefile_df["Field_name"].iloc[0:].tolist()
 # source_columns = source_columns.append('current_timestamp() as load_time')
 
 # Extract the target table and columns
 target_table = targettable_df["Target_table"].iloc[0]
-target_columns = targettable_df["Field_name"].iloc[1:].tolist()
+target_columns = targettable_df["Field_name"].iloc[0:].tolist()
 
 print("**** DBT Models Generation Process STG, SAC, CDS ***\n")
 
@@ -29,14 +29,15 @@ sql_statement0 = f"""
 
 {{{{
    config(
-        materialized='table'
+        materialized='table',
+        tags=['no_default_run']
    )
  
 }}}}
 
 WITH STG_{source_table} AS (
 
-SELECT CAST(NULL AS STRING) AS {', CAST(NULL AS STRING) AS '.join(source_columns)}
+SELECT CAST(NULL AS INTEGER) AS {', CAST(NULL AS STRING) AS '.join(source_columns)}
 LIMIT 0
 
 )
@@ -49,7 +50,10 @@ sql_statement1= f"""
 {{{{ config(materialized='table') }}}}
 
 with SOURCE_DATA as (
-SELECT * FROM `{source_gcp_project_id}.{source_gcp_dataset}.{source_table}`
+SELECT id,first_name,last_name,gender,City,JobTitle,cast(REPLACE(Salary1,"'","")as INT64) as Salary1
+,cast(REPLACE(Latitude,"'","") as FLOAT64) as Latitude
+,cast(REPLACE(Longitude,"'","") as FLOAT64) as Longitude,cast(REPLACE(Salary1,"'","") as FLOAT64)*0.3 As Incm_tax 
+ FROM `{source_gcp_project_id}.{source_gcp_dataset}.stg_{source_table.lower()}`
 )
 
 SELECT * FROM SOURCE_DATA
@@ -61,23 +65,19 @@ sql_statement2 = f"""
 
 {{{{
    config(
-        materialized='incremental',
-        on_schema_change='fail'
+        materialized='table'
    )
  
 }}}}
 
 WITH SAC_{source_table} AS (
 
-SELECT id,{', '.join(source_columns)}
+SELECT {', '.join(source_columns)},Incm_tax
 FROM {{{{ ref("sac_original") }}}} 
 
 )
-SELECT id,{', '.join(source_columns)},current_timestamp() as load_time FROM SAC_{source_table}
+SELECT {', '.join(source_columns)},Incm_tax,current_timestamp() as load_time FROM SAC_{source_table}
 
-{{% if is_incremental() %}}
-where id > ( select max(id) from {{{{this}}}})
-{{% endif %}}
 """
 
 # Output the SQL statement

@@ -2,20 +2,16 @@
 
 {{
    config(
-        materialized='incremental',
-        on_schema_change='fail'
+        materialized='table'
    )
  
 }}
 
 WITH SAC_ORIGINAL AS (
 
-SELECT id,first_name, last_name, gender, City, JobTitle, Salary1, Latitude, Longitude
+SELECT id, first_name, last_name, gender, City, JobTitle, Salary1, Latitude, Longitude,Incm_tax
 FROM {{ ref("sac_original") }} 
 
 )
-SELECT id,first_name, last_name, gender, City, JobTitle, Salary1, Latitude, Longitude,current_timestamp() as load_time FROM SAC_ORIGINAL
+SELECT id, first_name, last_name, gender, City, JobTitle, Salary1, Latitude, Longitude,Incm_tax,current_timestamp() as load_time FROM SAC_ORIGINAL
 
-{% if is_incremental() %}
-where id > ( select max(id) from {{this}})
-{% endif %}
