@@ -16,12 +16,12 @@ if "Source_table" not in sourcefile_df.columns or "Target_table" not in targetta
 source_table = sourcefile_df["Source_table"].iloc[0]
 source_gcp_project_id = sourcefile_df["Source_project_id"].iloc[0]
 source_gcp_dataset = sourcefile_df["Source_dataset"].iloc[0]
-source_columns = sourcefile_df["Field_name"].iloc[1:].tolist()
+source_columns = sourcefile_df["Field_name"].iloc[0:].tolist()
 # source_columns = source_columns.append('current_timestamp() as load_time')
 
 # Extract the target table and columns
 target_table = targettable_df["Target_table"].iloc[0]
-target_columns = targettable_df["Field_name"].iloc[1:].tolist()
+target_columns = targettable_df["Field_name"].iloc[0:].tolist()
 
 print("**** DBT Models Generation Process STG, SAC, CDS ***\n")
 
@@ -37,7 +37,7 @@ sql_statement0 = f"""
 
 WITH STG_{source_table} AS (
 
-SELECT CAST(NULL AS STRING) AS {', CAST(NULL AS STRING) AS '.join(source_columns)}
+SELECT CAST(NULL AS INTEGER) AS {', CAST(NULL AS STRING) AS '.join(source_columns)}
 LIMIT 0
 
 )
