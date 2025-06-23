@@ -30,6 +30,7 @@ sql_statement0 = f"""
 {{{{
    config(
         materialized='table'
+        tags=['no_default_run']
    )
  
 }}}}
