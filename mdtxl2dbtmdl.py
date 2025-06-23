@@ -41,7 +41,7 @@ SELECT CAST(NULL AS INTEGER) AS {', CAST(NULL AS STRING) AS '.join(source_column
 LIMIT 0
 
 )
-SELECT {', '.join(source_columns)} FROM  STG_{source_table}
+SELECT {', '.join(source_columns)} FROM  stg_{source_table}
 
 
 """
