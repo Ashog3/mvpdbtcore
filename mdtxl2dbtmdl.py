@@ -53,7 +53,7 @@ with SOURCE_DATA as (
 SELECT id,first_name,last_name,gender,City,JobTitle,cast(REPLACE(Salary1,"'","")as INT64) as Salary1
 ,cast(REPLACE(Latitude,"'","") as FLOAT64) as Latitude
 ,cast(REPLACE(Longitude,"'","") as FLOAT64) as Longitude,cast(REPLACE(Salary1,"'","") as FLOAT64)*0.3 As Incm_tax 
-FROM `{source_gcp_project_id}.{source_gcp_dataset}.STG_{source_table}`
+ FROM `{source_gcp_project_id}.{source_gcp_dataset}.stg_{source_table.lower()}`
 )
 
 SELECT * FROM SOURCE_DATA
@@ -72,11 +72,11 @@ sql_statement2 = f"""
 
 WITH SAC_{source_table} AS (
 
-SELECT id,{', '.join(source_columns)},Incm_tax
+SELECT {', '.join(source_columns)},Incm_tax
 FROM {{{{ ref("sac_original") }}}} 
 
 )
-SELECT id,{', '.join(source_columns)},Incm_tax,current_timestamp() as load_time FROM SAC_{source_table}
+SELECT {', '.join(source_columns)},Incm_tax,current_timestamp() as load_time FROM SAC_{source_table}
 
 """
 
