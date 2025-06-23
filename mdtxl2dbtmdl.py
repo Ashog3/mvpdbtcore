@@ -50,7 +50,10 @@ sql_statement1= f"""
 {{{{ config(materialized='table') }}}}
 
 with SOURCE_DATA as (
-SELECT dt.*,Salary1*0.3 As Incm_tax FROM `{source_gcp_project_id}.{source_gcp_dataset}.STG_{source_table} dt`
+SELECT id,first_name,last_name,gender,City,JobTitle,cast(REPLACE(Salary1,"'","")as INT64) as Salary1
+,cast(REPLACE(Latitude,"'","") as FLOAT64) as Latitude
+,cast(REPLACE(Longitude,"'","") as FLOAT64) as Longitude,cast(REPLACE(Salary1,"'","") as FLOAT64)*0.3 As Incm_tax 
+FROM `{source_gcp_project_id}.{source_gcp_dataset}.STG_{source_table} dt`
 )
 
 SELECT * FROM SOURCE_DATA
@@ -62,8 +65,7 @@ sql_statement2 = f"""
 
 {{{{
    config(
-        materialized='incremental',
-        on_schema_change='fail'
+        materialized='table'
    )
  
 }}}}
@@ -76,9 +78,6 @@ FROM {{{{ ref("sac_original") }}}}
 )
 SELECT id,{', '.join(source_columns)},Incm_tax,current_timestamp() as load_time FROM SAC_{source_table}
 
-{{% if is_incremental() %}}
-where id > ( select max(id) from {{{{this}}}})
-{{% endif %}}
 """
 
 # Output the SQL statement
