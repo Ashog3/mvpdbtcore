@@ -70,7 +70,7 @@ sql_statement2 = f"""
 
 WITH SAC_{source_table} AS (
 
-SELECT id,{', '.join(source_columns)}
+SELECT id,{', '.join(source_columns)},Incm_tax
 FROM {{{{ ref("sac_original") }}}} 
 
 )
