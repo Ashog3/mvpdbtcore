@@ -14,6 +14,6 @@ SELECT CAST(NULL AS INTEGER) AS id, CAST(NULL AS STRING) AS first_name, CAST(NUL
 LIMIT 0
 
 )
-SELECT id, first_name, last_name, gender, City, JobTitle, Salary1, Latitude, Longitude FROM  STG_ORIGINAL
+SELECT id, first_name, last_name, gender, City, JobTitle, Salary1, Latitude, Longitude FROM  stg_ORIGINAL
 
 
